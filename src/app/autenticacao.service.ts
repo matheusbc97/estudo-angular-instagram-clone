@@ -1,14 +1,17 @@
 import { Usuario } from './acesso/usuario.model';
-import * as firebase from 'firebase';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class Autenticacao{
+
   constructor(
     public firestore: AngularFirestore,
-    public fireauth: AngularFireAuth){
+    public fireauth: AngularFireAuth,
+    private router: Router
+  ){
   }
 
   public cadastrarUsuario(usuario: Usuario): Promise<any>{
@@ -28,7 +31,13 @@ export class Autenticacao{
 
   public autenticar(email: string, senha: string): void{
     this.fireauth.signInWithEmailAndPassword(email, senha)
-      .then(resposta => console.log(resposta))
+      .then(resposta => {
+        this.router.navigate(['/home']);
+      })
       .catch((error) => console.log('error', error));
+  }
+
+  public sair(): void{
+    this.fireauth.signOut();
   }
 }
